@@ -1,7 +1,17 @@
+import { useState } from "react";
 import rawSiteData from "../../files/rawSiteData.json";
 import parseDate from "../../utils/parseDate";
 
 function SitesTable() {
+  const stateData = rawSiteData.map((site, id) => {
+    return {
+      ...site,
+      InstallationDate: parseDate(site.InstallationDate),
+      id: id,
+    };
+  });
+
+  const [siteState, useSiteState] = useState(stateData);
   return (
     <table>
       <tr>
@@ -12,11 +22,11 @@ function SitesTable() {
         <th>Date</th>
         <th>Type</th>
       </tr>
-      {rawSiteData.map((site) => {
+      {siteState.map((site) => {
         const parsedDate = parseDate(site.InstallationDate);
         return (
           <>
-            <tr>
+            <tr key={site.id}>
               <td>{site.name}</td>
               <td>{site.phone}</td>
               <td>{site.phone}</td>
