@@ -11,7 +11,19 @@ function SitesTable() {
     };
   });
 
+  const handleChange = (e) => {
+    const updatedSite = siteState.map((site) => {
+      if (site.id == e.target.name)
+        return { ...site, InstallationDate: e.target.value };
+
+      return site;
+    });
+
+    useSiteState(updatedSite);
+  };
+
   const [siteState, useSiteState] = useState(stateData);
+
   return (
     <table>
       <tr>
@@ -23,7 +35,6 @@ function SitesTable() {
         <th>Type</th>
       </tr>
       {siteState.map((site) => {
-        const parsedDate = parseDate(site.InstallationDate);
         return (
           <>
             <tr key={site.id}>
@@ -31,7 +42,15 @@ function SitesTable() {
               <td>{site.phone}</td>
               <td>{site.phone}</td>
               <td>{site.AssignedElectritian}</td>
-              <td>{site.InstallationDate}</td>
+              {/* <td>{site.InstallationDate}</td> */}
+              <td>
+                <input
+                  type="date"
+                  value={site.InstallationDate}
+                  name={site.id}
+                  onChange={handleChange}
+                />
+              </td>
               <td>{site.grievance ? "Grievence" : "Normal"}</td>
             </tr>
           </>
