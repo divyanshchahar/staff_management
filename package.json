@@ -1,0 +1,12 @@
+{
+  "name": "staff_management",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "divyanshchahar <divyanshchahar@outlook.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ]
+}
