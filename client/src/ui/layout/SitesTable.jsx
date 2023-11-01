@@ -31,7 +31,7 @@ function SitesTable() {
               <td>{site.phone}</td>
               <td>{site.phone}</td>
               <td>{site.AssignedElectritian}</td>
-              <td>{parsedDate}</td>
+              <td>{site.InstallationDate}</td>
               <td>{site.grievance ? "Grievence" : "Normal"}</td>
             </tr>
           </>
