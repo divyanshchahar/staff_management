@@ -11,8 +11,6 @@ const parseDate = (date) => {
 
   const year = new Date(date).getFullYear();
 
-  console.log(`${year}-${month}-${day}`);
-
   return `${year}-${month}-${day}`;
 };
 
