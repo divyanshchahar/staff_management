@@ -8,5 +8,8 @@
   "workspaces": [
     "client",
     "server"
-  ]
+  ],
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
 }
