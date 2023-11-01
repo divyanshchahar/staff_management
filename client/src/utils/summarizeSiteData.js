@@ -1,3 +1,5 @@
+import electricianData from "../files/electricianData.json";
+
 const summarizeSiteData = (processedSiteData) => {
   const groupedByDate = Object.groupBy(
     processedSiteData,
@@ -13,6 +15,7 @@ const summarizeSiteData = (processedSiteData) => {
         (item) => item.grievance === "Grievence"
       ),
       normal: groupedByDate[date].filter((item) => item.grievance === "Normal"),
+      solutionFeasible: groupedByDate[date].length / electricianData.length < 3,
     };
   });
 
