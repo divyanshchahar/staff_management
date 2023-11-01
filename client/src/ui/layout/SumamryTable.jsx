@@ -1,5 +1,4 @@
 function SumamryTable({ summarizedData }) {
-  console.log(summarizedData);
   return (
     <>
       <h1>Summary</h1>
