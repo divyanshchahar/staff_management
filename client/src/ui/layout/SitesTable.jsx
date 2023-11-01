@@ -40,7 +40,7 @@ function SitesTable() {
             <tr key={site.id}>
               <td>{site.name}</td>
               <td>{site.phone}</td>
-              <td>{site.phone}</td>
+              <td>{site.city}</td>
               <td>{site.AssignedElectritian}</td>
               {/* <td>{site.InstallationDate}</td> */}
               <td>
