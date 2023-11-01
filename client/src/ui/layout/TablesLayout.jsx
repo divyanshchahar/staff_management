@@ -11,8 +11,8 @@ function TablesLayout() {
 
   return (
     <>
-      <SumamryTable summarizedData={summarizedData} />
       <SitesTable sitesDetails={siteState} stateFn={useSiteState} />
+      <SumamryTable summarizedData={summarizedData} />
     </>
   );
 }
