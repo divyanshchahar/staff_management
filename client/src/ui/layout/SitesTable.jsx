@@ -42,7 +42,6 @@ function SitesTable() {
               <td>{site.phone}</td>
               <td>{site.city}</td>
               <td>{site.AssignedElectritian}</td>
-              {/* <td>{site.InstallationDate}</td> */}
               <td>
                 <input
                   type="date"
