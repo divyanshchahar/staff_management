@@ -1,3 +1,5 @@
+import electricianData from "../../files/electricianData.json";
+
 function SumamryTable({ summarizedData }) {
   return (
     <>
@@ -9,6 +11,7 @@ function SumamryTable({ summarizedData }) {
           <th>Grievence Sites</th>
           <th>Normal Sites</th>
           <th>Total</th>
+          <th>Solution</th>
         </tr>
 
         {summarizedData.map((item) => {
@@ -18,6 +21,7 @@ function SumamryTable({ summarizedData }) {
               <td>{item.grievences.length}</td>
               <td>{item.normal.length}</td>
               <td>{item.grievences.length + item.normal.length}</td>
+              <td>{item.solutionFeasible ? "yes" : "no"}</td>
             </tr>
           );
         })}
