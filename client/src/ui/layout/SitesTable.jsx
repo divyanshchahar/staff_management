@@ -1,15 +1,10 @@
 import { useState } from "react";
 import rawSiteData from "../../files/rawSiteData.json";
 import parseDate from "../../utils/parseDate";
+import prepareSiteData from "../../utils/prepareSiteData";
 
 function SitesTable() {
-  const stateData = rawSiteData.map((site, id) => {
-    return {
-      ...site,
-      InstallationDate: parseDate(site.InstallationDate),
-      id: id,
-    };
-  });
+  const stateData = prepareSiteData(rawSiteData);
 
   const handleChange = (e) => {
     const updatedSite = siteState.map((site) => {
@@ -50,7 +45,7 @@ function SitesTable() {
                   onChange={handleChange}
                 />
               </td>
-              <td>{site.grievance ? "Grievence" : "Normal"}</td>
+              <td>{site.grievance}</td>
             </tr>
           </>
         );
