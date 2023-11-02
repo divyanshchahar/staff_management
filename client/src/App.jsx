@@ -1,5 +1,11 @@
+import TablesLayout from "./ui/layout/TablesLayout";
+
 function App() {
-  return <h1>Test</h1>;
+  return (
+    <>
+      <TablesLayout />
+    </>
+  );
 }
 
 export default App;
