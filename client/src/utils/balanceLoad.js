@@ -1,7 +1,12 @@
 import electricianData from "../files/electricianData.json";
 
-const generateLoadMap = (requests) => {
-  const loadMap = requests.map((item) => {
+// ########################
+// # CALCULATING SOLUTION #
+// ########################
+
+// Extractiong only relevent information from sites
+const generateLoadMap = (summarizedData) => {
+  const loadMap = summarizedData.map((item) => {
     return {
       date: item.date,
       grievences: item.grievences.map((grievenceItem) => grievenceItem.id),
@@ -11,6 +16,7 @@ const generateLoadMap = (requests) => {
   return loadMap;
 };
 
+// Adding ids and returning seprate arrays for grievence electrician and normal electrician
 const retrieveElectricianId = (arrayData) => {
   // adding ids
   const idArray = arrayData.map((item, id) => {
@@ -34,6 +40,7 @@ const retrieveElectricianId = (arrayData) => {
   return [grievenceElectricianId, normalElectricianId];
 };
 
+// Calculating Load Ratio i.e. number of site of given type / number of electrician of given type
 const calculateLoadRatio = (
   grievenceLoad,
   normalLoad,
@@ -48,6 +55,50 @@ const calculateLoadRatio = (
   return normalLoadRatio <= 3 && grievenceLoadRatio <= 3;
 };
 
+// Performing balancing on unblanaced load
+const swipeElemets = (smallLoad, largeLoad, excessLoad) => {
+  const balancedLoad1 = [
+    ...smallLoad,
+    ...largeLoad.slice(largeLoad.length - excessLoad, largeLoad.length),
+  ];
+
+  const balancedLoad2 = largeLoad.slice(0, largeLoad.length - excessLoad);
+
+  return [balancedLoad1, balancedLoad2];
+};
+
+// Determining which array needs balancing and then balancing it
+const balanceLoadArrays = (
+  load1,
+  load2,
+  loadRatio1,
+  loadRatio2,
+  desiredLoadRatio
+) => {
+  let excessLoad = 0;
+
+  let balancedLoad1 = [];
+  let balancedLoad2 = [];
+
+  if (loadRatio1 > loadRatio2) {
+    excessLoad = load1.length % desiredLoadRatio;
+
+    const [temp1, temp2] = swipeElemets(load2, load1, excessLoad);
+
+    balancedLoad1 = [...temp1];
+    balancedLoad2 = [...temp2];
+  } else {
+    excessLoad = load2.length % desiredLoadRatio;
+
+    const [temp1, temp2] = swipeElemets(load1, load2, excessLoad);
+    balancedLoad1 = [...temp1];
+    balancedLoad2 = [...temp2];
+  }
+
+  return [balancedLoad1, balancedLoad2];
+};
+
+// Generating arrays for assignong sites
 const generateSolutionArray = (load, worker) => {
   let solution = [];
 
@@ -71,6 +122,7 @@ const generateSolutionArray = (load, worker) => {
   return solution;
 };
 
+// Putting together solution data
 const generateSolutionMap = (
   date,
   balancedGrievenceLoadArray,
@@ -105,47 +157,7 @@ const generateSolutionMap = (
   return { date, solution };
 };
 
-const swipeElemets = (smallLoad, largeLoad, excessLoad) => {
-  const balancedLoad1 = [
-    ...smallLoad,
-    ...largeLoad.slice(largeLoad.length - excessLoad, largeLoad.length),
-  ];
-
-  const balancedLoad2 = largeLoad.slice(0, largeLoad.length - excessLoad);
-
-  return [balancedLoad1, balancedLoad2];
-};
-
-const balanceLoadArrays = (
-  load1,
-  load2,
-  loadRatio1,
-  loadRatio2,
-  desiredLoadRatio
-) => {
-  let excessLoad = 0;
-
-  let balancedLoad1 = [];
-  let balancedLoad2 = [];
-
-  if (loadRatio1 > loadRatio2) {
-    excessLoad = load1.length % desiredLoadRatio;
-
-    const [temp1, temp2] = swipeElemets(load2, load1, excessLoad);
-
-    balancedLoad1 = [...temp1];
-    balancedLoad2 = [...temp2];
-  } else {
-    excessLoad = load2.length % desiredLoadRatio;
-
-    const [temp1, temp2] = swipeElemets(load1, load2, excessLoad);
-    balancedLoad1 = [...temp1];
-    balancedLoad2 = [...temp2];
-  }
-
-  return [balancedLoad1, balancedLoad2];
-};
-
+// Executing the steps to calculate solution
 const calculateSolution = (
   date,
   grievenceLoad,
@@ -188,6 +200,10 @@ const calculateSolution = (
   }
 };
 
+// #################
+// # Main Function #
+// #################
+
 const balanceLoad = (summarizedData) => {
   const loadMap = generateLoadMap(summarizedData);
 
@@ -203,8 +219,6 @@ const balanceLoad = (summarizedData) => {
       normalElectricianId
     )
   );
-
-  console.log(solution);
 };
 
 export default balanceLoad;
