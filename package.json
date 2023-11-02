@@ -9,6 +9,9 @@
     "client",
     "server"
   ],
+  "scripts": {
+    "dev": "yarn workspace client run dev"
+  },
   "dependencies": {
     "concurrently": "^8.2.2"
   }
