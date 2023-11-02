@@ -1,4 +1,4 @@
-import electricianData from "../files/electricianData.json";
+import electricianData from "../files/electricianData";
 
 // ########################
 // # CALCULATING SOLUTION #
@@ -19,25 +19,25 @@ const generateLoadMap = (summarizedData) => {
 // Adding ids and returning seprate arrays for grievence electrician and normal electrician
 const retrieveElectricianId = (arrayData) => {
   // adding ids
-  const idArray = arrayData.map((item, id) => {
+  const electricianWithIds = arrayData.map((item, id) => {
     return { id, ...item };
   });
 
   //filtering grivence electrician
-  const grievencElectrician = idArray.filter(
+  const grievencElectricians = electricianWithIds.filter(
     (electrician) => electrician.grievanceElectrician
   );
 
-  const grievenceElectricianId = grievencElectrician.map((item) => item.id);
+  const grievenceElectricianIds = grievencElectricians.map((item) => item.id);
 
   // filtering normal electricians
-  const normalElectrician = idArray.filter(
+  const normalElectricians = electricianWithIds.filter(
     (electrician) => !electrician.grievanceElectrician
   );
 
-  const normalElectricianId = normalElectrician.map((item) => item.id);
+  const normalElectricianIds = normalElectricians.map((item) => item.id);
 
-  return [grievenceElectricianId, normalElectricianId];
+  return [electricianWithIds, grievenceElectricianIds, normalElectricianIds];
 };
 
 // Calculating Load Ratio i.e. number of site of given type / number of electrician of given type
@@ -200,6 +200,89 @@ const calculateSolution = (
   }
 };
 
+// ##########################
+// # BUILDING SOLUTION DATA #
+// ##########################
+
+// function to un group sites data
+const ungroupData = (summarizedData) => {
+  const unGroupedDataWithId = [];
+
+  summarizedData.map((item) => {
+    item.grievences.map((grievenceItem) => {
+      unGroupedDataWithId.push({ date: item.date, ...grievenceItem });
+    });
+
+    item.normal.map((normalItem) => {
+      unGroupedDataWithId.push({ date: item.date, ...normalItem });
+    });
+  });
+
+  return unGroupedDataWithId;
+};
+
+const retrieveElectrician = (objectWithElectricianId, electricianWithIds) => {
+  // console.log(objectWithElectricianId);
+  const idToFind = objectWithElectricianId.workerId;
+
+  const [electrician] = electricianWithIds.filter(
+    (item) => item.id === idToFind
+  );
+
+  return electrician;
+};
+
+const retrieveSites = (objectWithSiteIds, siteListwithIds) => {
+  const filteredSites = [];
+
+  objectWithSiteIds.sites.forEach((item) => {
+    siteListwithIds.map((siteItem) => {
+      if (siteItem.id === item) filteredSites.push(siteItem);
+    });
+  });
+
+  return filteredSites;
+};
+
+const putElectricinsinSites = (electrician, sites) => {
+  const date = new Date();
+  sites.map((item) => {
+    item.AssignedElectritian.push(
+      `${electrician.name} | ${
+        electrician.phoneNumber
+      } | ${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+    );
+  });
+
+  return sites;
+};
+
+const buildSolution = (solutions, electricianWithIds, ungroupedDataWithId) => {
+  const solutionData = [];
+
+  solutions.map((item) => {
+    item.solution.map((solutionItem) => {
+      const electricians = retrieveElectrician(
+        solutionItem,
+        electricianWithIds
+      );
+
+      if (solutionItem.sites) {
+        const sites = retrieveSites(solutionItem, ungroupedDataWithId);
+
+        const sitesWithElectricians = putElectricinsinSites(
+          electricians,
+          sites
+        );
+
+        solutionData.push(...sitesWithElectricians);
+      }
+    });
+  });
+
+  console.log(solutionData);
+};
+
 // #################
 // # Main Function #
 // #################
@@ -207,18 +290,22 @@ const calculateSolution = (
 const balanceLoad = (summarizedData) => {
   const loadMap = generateLoadMap(summarizedData);
 
-  const [grievenceElectricianId, normalElectricianId] =
+  const [electricianWithIds, grievenceElectricianIds, normalElectricianIds] =
     retrieveElectricianId(electricianData);
 
-  const solution = loadMap.map((item) =>
+  const solutions = loadMap.map((item) =>
     calculateSolution(
       item.date,
       item.grievences,
       item.normal,
-      grievenceElectricianId,
-      normalElectricianId
+      grievenceElectricianIds,
+      normalElectricianIds
     )
   );
+
+  const unGroupedDataWithIds = ungroupData(summarizedData);
+
+  buildSolution(solutions, electricianWithIds, unGroupedDataWithIds);
 };
 
 export default balanceLoad;
